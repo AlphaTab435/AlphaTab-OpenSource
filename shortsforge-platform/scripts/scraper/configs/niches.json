@@ -1,0 +1,42 @@
+{
+  "Relationship Drama": {
+    "reddit": ["AmItheAsshole", "TrueOffMyChest", "relationships", "pettyrevenge"],
+    "ai_prompt": "Write a dramatic, highly realistic, first-person story about a shocking family betrayal or relationship conflict."
+  },
+  "Horror": {
+    "reddit": ["nosleep", "LetsNotMeet", "creepyencounters"],
+    "ai_prompt": "Write a terrifying, psychological thriller short story from a first-person perspective."
+  },
+  "Sci-Fi Mystery": {
+    "reddit": ["Glitch_in_the_Matrix", "Thetruthishere"],
+    "ai_prompt": "Write a grounded, eerie story about a glitch in the matrix or an unexplained sci-fi phenomenon."
+  },
+  "History": {
+    "reddit": ["AskHistorians", "HistoryMemes", "AncientCivilizations"],
+    "ai_prompt": "Write an engaging, fast-paced educational story about a fascinating or bizarre historical event."
+  },
+  "Unsolved Mysteries": {
+    "reddit": ["UnresolvedMysteries", "TrueCrimeDiscussion"],
+    "ai_prompt": "Write a gripping narrative about an unsolved mystery, missing person, or mysterious disappearance."
+  },
+  "True Crime": {
+    "reddit": ["TrueCrime", "MorbidReality"],
+    "ai_prompt": "Write a suspenseful narrative detailing the facts of a famous or chilling true crime case."
+  },
+  "Psychology": {
+    "reddit": ["psychology", "socialskills", "explainlikeimfive"],
+    "ai_prompt": "Write a fascinating explanation of a psychological phenomenon, experiment, or human brain glitch."
+  },
+  "Human Behavior": {
+    "reddit": ["sociology", "LifeProTips", "socialskills"],
+    "ai_prompt": "Write an insightful story breaking down a bizarre or everyday quirk of human behavior and why we do it."
+  },
+  "Company Failures": {
+    "reddit": ["business", "Entrepreneur", "wallstreetbets"],
+    "ai_prompt": "Write a dramatic, fast-paced business case study detailing how a massive corporation or startup failed spectacularly."
+  },
+  "Science and Space": {
+    "reddit": ["space", "science", "askscience"],
+    "ai_prompt": "Write a mind-blowing, educational narrative about a terrifying or awe-inspiring scientific or cosmic discovery."
+  }
+}

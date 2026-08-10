@@ -1,0 +1,79 @@
+# Environment & secrets
+.env
+*.env
+
+# Database
+data/credentials/
+data/outputs/
+data/logs/
+data/jobs/
+data/temp/
+data/music/
+data/shortsforge.db
+test.db
+scripts/scraper/scraper.db
+scripts/scraper/output/
+
+# Story Maker Data
+data/audio_temp/
+data/backgrounds/
+data/final_shorts/
+data/metrics/
+data/raw_stories/
+data/video_temp/
+data/thumbnails/
+data/temp_executions/
+test.mp3
+
+# Playwright & Auth State
+data/auth/
+playwright_state/
+data/gemini_profile/
+data/chrome_profile_test/
+data/chrome_profile_fb/
+# Cookies exports (sensitive) - IGNORE the exported cookies.txt file and the folder
+data/cookies/cookies.txt  # FIXED: ignore exported cookies file
+data/cookies/
+
+# Analysis Temp / Debug
+data/debug/
+data/deconstructions/*.log
+data/deconstructions/temp_*.mp4
+data/deconstructions/dna/temp_*.mp4
+data/deconstructions/analysis_*.json
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+venv/
+
+# Node
+node_modules/
+dist/
+
+# IDE / OS
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Backups (keep in project but not in git)
+data/backups/
+antigravity_backup/
+antigravity_backup_v2/
+antigravity_latest_backup/
+
+# One-off test files
+_audit.py
+test_*.py
+temp_source.py
+scripts/migrate_legacy_files.py
+scripts/reorganize_data_folders.py
+
+# Uncommitted/Local testing paths
+deploy.zip
+scratch/
+data/db backup/
+experiments/
+temp

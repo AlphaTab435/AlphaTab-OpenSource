@@ -1,0 +1,19 @@
+{
+  "enable_audit_folder": true,
+  "ai_fallback_chain": ["groq", "gemini", "cerebras"],
+  "ai_providers": {
+    "gemini": {
+      "generator_model": "gemini-3.1-flash-lite",
+      "filter_model": "gemini-3.1-flash-lite"
+    },
+    "groq": {
+      "generator_model": "openai/gpt-oss-120b",
+      "filter_model": "qwen/qwen3.6-27b"
+    },
+    "cerebras": {
+      "generator_model": "zai-glm-4.7",
+      "filter_model": "zai-glm-4.7"
+    }
+  },
+  "max_input_words_for_filter": 1500
+}

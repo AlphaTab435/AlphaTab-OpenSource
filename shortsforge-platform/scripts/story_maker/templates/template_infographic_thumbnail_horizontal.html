@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080, initial-scale=1.0">
+    <title>Infographic Thumbnail Horizontal</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { 
+            margin: 0; background-color: {{ BG_COLOR }}; 
+            display: flex; flex-direction: row; align-items: center; justify-content: center; 
+            height: 1080px; width: 1920px; overflow: hidden; padding: 0 150px; box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
+            
+            background-image: 
+                linear-gradient({{ ICON_COLOR }}22 2px, transparent 2px),
+                linear-gradient(90deg, {{ ICON_COLOR }}22 2px, transparent 2px);
+            background-size: 80px 80px;
+            background-position: center center;
+        }
+        
+        .bg-glow {
+            position: absolute; width: 1920px; height: 1080px; top: 0; left: 0;
+            background: radial-gradient(circle at 30% 50%, {{ ICON_COLOR }}44 0%, transparent 70%);
+            z-index: 0; pointer-events: none; mix-blend-mode: screen;
+        }
+
+        .canvas-container {
+            position: relative; width: 1620px; height: 900px; z-index: 1;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        .icon-container {
+            width: 200px; height: 200px;
+            color: {{ ICON_COLOR }};
+            display: flex; align-items: center; justify-content: center;
+            filter: drop-shadow(0 0 40px {{ ICON_COLOR }}88);
+            margin-bottom: 40px;
+            z-index: 1;
+        }
+        .icon-container svg { width: 200px; height: 200px; stroke-width: 1.5px; }
+        
+        .hook-text {
+            font-size: 80px; font-weight: 900; color: #ffffff; text-align: center;
+            text-shadow: 0 10px 20px rgba(0,0,0,0.8);
+            width: 80%; z-index: 1; margin: 0; padding: 0 40px;
+            line-height: 1.2;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <div class="canvas-container">
+        <div class="icon-container">
+            <i data-lucide="{{ ICON_KEYWORD }}"></i>
+        </div>
+        <div class="hook-text">{{ HOOK_TEXT }}</div>
+    </div>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

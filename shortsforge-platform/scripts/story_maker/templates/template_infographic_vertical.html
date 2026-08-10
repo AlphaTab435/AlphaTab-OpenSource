@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, height=1920, initial-scale=1.0">
+    <title>Infographic Template</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { 
+            margin: 0; background-color: {{ BG_COLOR }}; 
+            display: flex; flex-direction: column; align-items: center; justify-content: space-between; 
+            height: 1920px; width: 1080px; overflow: hidden; padding: 150px 0; box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
+            
+            background-image: 
+                linear-gradient(rgba({{ ICON_COLOR_RGB }}, 0.13) 2px, transparent 2px),
+                linear-gradient(90deg, rgba({{ ICON_COLOR_RGB }}, 0.13) 2px, transparent 2px);
+            background-size: 80px 80px;
+            background-position: center center;
+            animation: gridMove 15s linear infinite;
+        }
+        @keyframes gridMove {
+            0% { background-position: 0px 0px; }
+            100% { background-position: 0px 80px; }
+        }
+        
+        .bg-glow {
+            position: absolute; width: 1080px; height: 1920px; top: 0; left: 0;
+            background: radial-gradient(circle at 50% 40%, rgba({{ ICON_COLOR_RGB }}, 0.27) 0%, transparent 70%);
+            z-index: 0; pointer-events: none; mix-blend-mode: screen;
+        }
+
+        .canvas-container {
+            position: relative; width: 900px; height: 1200px; z-index: 1;
+        }
+
+        /* Layout Slots */
+        .slot {
+            position: absolute; width: 300px; height: 300px;
+            display: flex; align-items: center; justify-content: center;
+            color: {{ ICON_COLOR }}; filter: drop-shadow(0 0 30px rgba({{ ICON_COLOR_RGB }}, 0.33));
+            opacity: 0; transform: scale(0.5); /* hidden initially */
+        }
+        /* Fix microscopic Lucide icons by targeting the SVG directly */
+        .slot svg { width: 250px !important; height: 250px !important; stroke-width: 1.5px; }
+
+        .slot-center { top: 450px; left: 300px; }
+        .slot-top { top: 50px; left: 300px; }
+        .slot-bottom { top: 850px; left: 300px; }
+        .slot-left { top: 450px; left: 0px; }
+        .slot-right { top: 450px; left: 600px; }
+
+        .bubble {
+            background: #ffffff; color: #000000; padding: 30px 40px; border-radius: 40px;
+            font-size: 45px; font-weight: 900; text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            position: absolute;
+            opacity: 0;
+        }
+        .bubble::after {
+            content: ''; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%);
+            border-width: 20px 20px 0; border-style: solid; border-color: #ffffff transparent transparent transparent;
+        }
+
+        /* Arrows Canvas */
+        #svg-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;
+            z-index: 0;
+        }
+        
+        .arrow-path {
+            fill: none; stroke: {{ ICON_COLOR }}; stroke-width: 12; stroke-dasharray: 20 20;
+            stroke-linecap: round; opacity: 0; marker-end: url(#arrowhead);
+        }
+
+        .line-path {
+            fill: none; stroke: {{ ICON_COLOR }}; stroke-width: 12; stroke-dasharray: 20 20;
+            stroke-linecap: round; opacity: 0; marker-start: url(#dot); marker-end: url(#dot);
+        }
+
+        /* Captions */
+        .caption-container {
+            position: relative; z-index: 1; width: 90%; margin-top: auto; margin-bottom: 150px;
+            height: 120px;
+        }
+        .word-chunk {
+            position: absolute; top: 0; left: 0; width: 100%;
+            display: flex; justify-content: center; flex-wrap: wrap; gap: 20px;
+            opacity: 0;
+        }
+        .word {
+            font-size: 80px; font-weight: 900; letter-spacing: -2px;
+            color: rgba(255, 255, 255, 0.15); transform-origin: bottom center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-glow"></div>
+
+    <div class="canvas-container" id="canvas">
+        <svg id="svg-layer">
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="{{ ICON_COLOR }}" />
+                </marker>
+                <marker id="dot" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+                    <circle cx="3" cy="3" r="3" fill="{{ ICON_COLOR }}" />
+                </marker>
+            </defs>
+        </svg>
+    </div>
+
+    <div class="caption-container" id="captions"></div>
+
+    <script>
+        const wordsData = {{ WORDS_JSON }};
+        const visualNodes = {{ VISUAL_NODES_JSON }};
+
+        const captionContainer = document.getElementById('captions');
+        const canvas = document.getElementById('canvas');
+        const svgLayer = document.getElementById('svg-layer');
+
+        // Build Captions
+        let currentChunk = null;
+        let chunkIndex = 0;
+        wordsData.forEach((w, i) => {
+            if (i % 5 === 0) {
+                currentChunk = document.createElement('div');
+                currentChunk.className = 'word-chunk';
+                currentChunk.id = 'chunk' + chunkIndex;
+                captionContainer.appendChild(currentChunk);
+                chunkIndex++;
+            }
+            w.chunkIdx = chunkIndex - 1;
+            const div = document.createElement('div');
+            div.className = 'word'; div.id = 'w' + i; div.innerText = w.text;
+            currentChunk.appendChild(div);
+        });
+
+        const getSlotCenter = (slotName) => {
+            const positions = {
+                'center': { x: 450, y: 600 },
+                'top': { x: 450, y: 200 },
+                'bottom': { x: 450, y: 1000 },
+                'left': { x: 150, y: 600 },
+                'right': { x: 750, y: 600 }
+            };
+            return positions[slotName] || positions['center'];
+        };
+
+        // PHASE 1: Build a set of populated slots (icons and bubbles only)
+        const populatedSlots = new Set();
+
+        visualNodes.forEach((node, i) => {
+            const nodeId = 'node' + i;
+
+            if (node.type === 'icon') {
+                const el = document.createElement('div');
+                el.className = `slot slot-${node.slot}`;
+                el.id = nodeId;
+                el.innerHTML = `<i data-lucide="${node.keyword}"></i>`;
+                canvas.appendChild(el);
+                populatedSlots.add(node.slot);
+            }
+            else if (node.type === 'bubble') {
+                const el = document.createElement('div');
+                el.className = `bubble`;
+                el.id = nodeId;
+                el.innerText = node.text;
+
+                const center = getSlotCenter(node.slot);
+                el.style.left = `${center.x}px`;
+                el.style.top = `${center.y - 150}px`;
+                el.style.transform = 'translateX(-50%)';
+                canvas.appendChild(el);
+                populatedSlots.add(node.slot);
+            }
+        });
+
+        // PHASE 2: Only render arrows/lines that connect two POPULATED slots
+        visualNodes.forEach((node, i) => {
+            if (node.type !== 'arrow' && node.type !== 'line') return;
+
+            const nodeId = 'node' + i;
+
+            // VALIDATION: Skip arrows that point to empty slots
+            if (!populatedSlots.has(node.from_slot) || !populatedSlots.has(node.to_slot)) return;
+            // Skip self-referencing arrows
+            if (node.from_slot === node.to_slot) return;
+
+            const p1 = getSlotCenter(node.from_slot);
+            const p2 = getSlotCenter(node.to_slot);
+
+            const dx = p2.x - p1.x;
+            const dy = p2.y - p1.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const angle = Math.atan2(dy, dx);
+            const R = Math.min(90, dist / 3); // Adaptive radius to prevent negative-length arrows
+
+            const startX = p1.x + R * Math.cos(angle);
+            const startY = p1.y + R * Math.sin(angle);
+            const endX = p2.x - R * Math.cos(angle);
+            const endY = p2.y - R * Math.sin(angle);
+
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("d", `M ${startX} ${startY} L ${endX} ${endY}`);
+
+            if (node.type === 'arrow') {
+                path.setAttribute("class", "arrow-path");
+            } else {
+                path.setAttribute("class", "line-path");
+            }
+
+            path.id = nodeId;
+            svgLayer.appendChild(path);
+        });
+
+        lucide.createIcons();
+
+        // Robust Fallback: If LLM hallucinated an invalid icon, the <i> tag won't be replaced by SVG.
+        const failedIcons = document.querySelectorAll('i[data-lucide]');
+        if (failedIcons.length > 0) {
+            failedIcons.forEach(el => el.setAttribute('data-lucide', 'circle-dot'));
+            lucide.createIcons();
+        }
+
+        const tl = anime.timeline({ autoplay: false, duration: {{ TOTAL_DURATION_MS }} });
+
+        // Pre-compute the start_ms for each node for timing enforcement
+        const totalDuration = {{ TOTAL_DURATION_MS }};
+        const nodeStartTimes = {};
+        visualNodes.forEach((node, i) => {
+            let triggerWord = null;
+            if (node.sync_word) {
+                const target = node.sync_word.toLowerCase().replace(/[^a-z0-9]/g, '');
+                // Fuzzy match: exact, startsWith, or contains to handle plurals/tenses
+                triggerWord = wordsData.find(w => {
+                    const wClean = w.text.toLowerCase().replace(/[^a-z0-9]/g, '');
+                    return wClean === target || wClean.startsWith(target) || target.startsWith(wClean);
+                });
+            }
+            if (!triggerWord && node.sync_word_idx !== undefined) {
+                triggerWord = wordsData[node.sync_word_idx];
+            }
+            if (!triggerWord) {
+                // Distribute evenly through scene so icons don't all pile up at t=0
+                const fraction = visualNodes.length > 1 ? i / visualNodes.length : 0;
+                const fallbackIdx = Math.min(Math.floor(fraction * wordsData.length), wordsData.length - 1);
+                triggerWord = wordsData[fallbackIdx];
+            }
+            nodeStartTimes[i] = triggerWord.start_ms;
+
+            // Hard enforcement: The very first visual node MUST appear immediately so the screen is never blank.
+            if (i === 0) {
+                nodeStartTimes[i] = wordsData[0].start_ms;
+            }
+        });
+
+        // Find the start_ms of the first icon/bubble in each slot (for arrow timing enforcement)
+        const slotAppearTimes = {};
+        visualNodes.forEach((node, i) => {
+            if (node.type === 'icon' || node.type === 'bubble') {
+                const t = nodeStartTimes[i];
+                if (slotAppearTimes[node.slot] === undefined || t < slotAppearTimes[node.slot]) {
+                    slotAppearTimes[node.slot] = t;
+                }
+            }
+        });
+
+        visualNodes.forEach((node, i) => {
+            const nodeId = '#' + 'node' + i;
+            // Skip arrows that were not rendered (validation removed them)
+            if ((node.type === 'arrow' || node.type === 'line') && !document.getElementById('node' + i)) return;
+
+            let startTime = nodeStartTimes[i];
+
+            // TIMING ENFORCEMENT: Arrows/lines must appear AFTER both connected slots are populated
+            if (node.type === 'arrow' || node.type === 'line') {
+                const fromTime = slotAppearTimes[node.from_slot] || 0;
+                const toTime = slotAppearTimes[node.to_slot] || 0;
+                const latestIcon = Math.max(fromTime, toTime);
+                // Arrow appears 500ms after the later icon to give it time to pop in
+                startTime = Math.max(startTime, latestIcon + 500);
+            }
+
+            if (node.animation === 'pop') {
+                tl.add({ targets: nodeId, opacity: [0, 1], scale: [0.3, 1], duration: 1000, easing: 'easeOutElastic(1, .6)' }, startTime);
+            }
+            else if (node.animation === 'fade') {
+                tl.add({ targets: nodeId, opacity: [0, 1], translateY: [50, 0], scale: [0.8, 1], duration: 1000, easing: 'easeOutExpo' }, startTime);
+            }
+            else if (node.animation === 'draw' && (node.type === 'arrow' || node.type === 'line')) {
+                tl.add({ targets: nodeId, opacity: [0, 1], strokeDashoffset: [anime.setDashoffset, 0], duration: 1200, easing: 'easeInOutSine' }, startTime);
+            }
+            else {
+                tl.add({ targets: nodeId, opacity: [0, 1], scale: [0.5, 1], duration: 800, easing: 'easeOutBack' }, startTime);
+            }
+        });
+
+        wordsData.forEach((word, i) => {
+            if (i === 0 || word.chunkIdx !== wordsData[i - 1].chunkIdx) {
+                tl.add({ targets: '#chunk' + word.chunkIdx, opacity: 1, duration: 1 }, word.start_ms);
+            }
+
+            tl.add({ targets: '#w' + i, color: ['rgba(255,255,255,0.2)', '#ffffff'], scale: [1, 1.05, 1], duration: 250, easing: 'easeOutSine' }, word.start_ms);
+            tl.add({ targets: '#w' + i, color: '#aaaaaa', duration: 200, easing: 'linear' }, word.end_ms);
+
+            if (i === wordsData.length - 1 || word.chunkIdx !== wordsData[i + 1].chunkIdx) {
+                tl.add({ targets: '#chunk' + word.chunkIdx, opacity: 0, duration: 1 }, word.end_ms);
+            }
+        });
+
+        window.seekAnimation = function (timestampMs) { tl.seek(timestampMs); };
+    </script>
+</body>
+
+</html>

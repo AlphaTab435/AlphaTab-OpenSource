@@ -1,0 +1,19 @@
+{
+  "ABC": {
+    "is_shorts_only": true,
+    "limit_per_run": 10,
+    "niches": [
+      "True Crime",
+      "Unsolved Mysteries"
+    ],
+    "sources": [
+      "trends"
+    ],
+    "trends_config": {
+      "providers": ["google", "yt", "wiki"],
+      "selection_mode": "sequential",
+      "yt_seed_providers": ["google", "wiki"],
+      "ignore_niches": false
+    }
+  }
+}
