@@ -37,7 +37,7 @@ Uses dynamically selected icons, visual elements, speech bubbles, and animated l
 Uses generated or selected images as the primary visual background for the story.
 
 - [Image Background Example 1](https://www.youtube.com/shorts/rj80FJR1AKM)
-- [Image Background Example 2](https://www.youtube.com/shorts/xtYTTCoBkN8)
+- [Image Background Example 2](https://www.youtube.com/shorts/BBE0-yPOZDc)
 
 ### ✨ Dynamic Image Background
 
